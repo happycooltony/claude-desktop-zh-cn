@@ -14782,5 +14782,901 @@
   [
     "Design in codebase",
     "在程式碼庫中設計"
+  ],
+  [
+    "GCP credentials file path",
+    "GCP 憑據檔案路徑"
+  ],
+  [
+    "Azure AI Foundry base URL",
+    "Azure AI Foundry 基礎 URL"
+  ],
+  [
+    "Vertex OAuth client secret",
+    "Vertex OAuth 客戶端金鑰"
+  ],
+  [
+    "OTLP headers helper script",
+    "OTLP 請求頭輔助指令碼"
+  ],
+  [
+    "Blocked plugin MCP servers",
+    "已遮蔽的外掛 MCP 伺服器"
+  ],
+  [
+    "Allow the built-in browser",
+    "允許使用內建瀏覽器"
+  ],
+  [
+    "Must be an https:// address",
+    "必須是 https:// 地址"
+  ],
+  [
+    "The path must not hold an @",
+    "路徑中不能包含 @"
+  ],
+  [
+    "Disable local Code sessions",
+    "禁用本地 Code 會話"
+  ],
+  [
+    "Default Quick Entry shortcut",
+    "預設快速錄入快捷鍵"
+  ],
+  [
+    "Remember allowed files (sec)",
+    "記住已允許檔案（秒）"
+  ],
+  [
+    "Allow Hardware Buddy devices",
+    "允許 Hardware Buddy 裝置"
+  ],
+  [
+    "Workforce Identity IdP (OIDC)",
+    "Workforce Identity 身份提供商（OIDC）"
+  ],
+  [
+    "Claude for Financial Services",
+    "Claude 金融服務業版"
+  ],
+  [
+    "An unexpected error occurred.",
+    "發生了意外錯誤。"
+  ],
+  [
+    "Identity provider sign-in flow",
+    "身份提供商登入流程"
+  ],
+  [
+    "Azure AI Foundry resource name",
+    "Azure AI Foundry 資源名稱"
+  ],
+  [
+    "Reuse the inference credential",
+    "複用推理憑據"
+  ],
+  [
+    "Desktop telemetry export level",
+    "桌面版診斷資料匯出級別"
+  ],
+  [
+    "Artifact preview iframe origin",
+    "Artifact預覽 iframe 來源"
+  ],
+  [
+    "Workforce Identity sign-in flow",
+    "Workforce Identity 登入流程"
+  ],
+  [
+    "Allow persistent tool approvals",
+    "允許持久保留工具批准"
+  ],
+  [
+    "Re-run helper for silent refresh",
+    "靜默重新整理時重新執行輔助程式"
+  ],
+  [
+    "Identity provider sign-in (OIDC)",
+    "身份提供商登入（OIDC）"
+  ],
+  [
+    "Move app data off network shares",
+    "將應用資料移出網路共享"
+  ],
+  [
+    "No VM: Chat without file analysis",
+    "無虛擬機器：Chat 無法分析檔案"
+  ],
+  [
+    "Workforce Identity billing project",
+    "Workforce Identity 計費項目"
+  ],
+  [
+    "Restart to apply installed updates",
+    "重啟以應用已安裝的更新"
+  ],
+  [
+    "Must name a repository after the host",
+    "倉庫名必須與主機名一致"
+  ],
+  [
+    "Keep connector sign-in in the browser",
+    "連接器登入保持在瀏覽器中完成"
+  ],
+  [
+    "Allowed sites in the built-in browser",
+    "內建瀏覽器允許的站點"
+  ],
+  [
+    "Blocked sites in the built-in browser",
+    "內建瀏覽器遮蔽的站點"
+  ],
+  [
+    "Allow sharing files open in other apps",
+    "允許共享在其他應用中開啟的檔案"
+  ],
+  [
+    "An owner/repo may only be the whole path",
+    "owner/repo 只能是完整路徑"
+  ],
+  [
+    "Check for updates on releases.claude.com",
+    "在 releases.claude.com 上檢查更新"
+  ],
+  [
+    "Chat and Cowork unified retention period",
+    "Chat 與 Cowork 的統一保留期"
+  ],
+  [
+    "Allow optional client-certificate fallback",
+    "允許可選的客戶端證書回退"
+  ],
+  [
+    "Could not reach Microsoft sign-in endpoint",
+    "無法連線 Microsoft 登入端點"
+  ],
+  [
+    "The path may hold no percent-escape but %20",
+    "路徑中除 %20 外不能含百分號轉義"
+  ],
+  [
+    "Default site policy in the built-in browser",
+    "內建瀏覽器的預設站點策略"
+  ],
+  [
+    "Includes a value set by provider: {provider}",
+    "包含由提供商設定的值：{provider}"
+  ],
+  [
+    "Allow screenshots of the screen and other apps",
+    "允許擷取螢幕和其他應用的畫面"
+  ],
+  [
+    "Format valid (fully verified at first sign-in)",
+    "格式有效（首次登入時完整校驗）"
+  ],
+  [
+    "Desktop hides its own announcements of new features",
+    "桌面版隱藏自身的新功能介紹"
+  ],
+  [
+    "Names a file on the person's computer that no host has",
+    "指定使用者電腦上的某個檔案，主機上沒有該檔案"
+  ],
+  [
+    "This choice would leave no surface on. Turn on Code first.",
+    "此選項會導致沒有任何介面可用。請先開啟 Code。"
+  ],
+  [
+    "Import earlier third-party sessions into this organization",
+    "將更早的第三方會話匯入本組織"
+  ],
+  [
+    "Microsoft sign-in endpoint returned an unexpected response",
+    "Microsoft 登入端點返回了意外的響應"
+  ],
+  [
+    "The host cuts long values in the session telemetry it sends",
+    "主機會截斷其傳送的會話診斷資料中的超長取值"
+  ],
+  [
+    "Test connection is not available for local (stdio) servers.",
+    "本地（stdio）伺服器不支援測試連線。"
+  ],
+  [
+    "Chooses how the person's Entra sign-in runs on their computer",
+    "選擇使用者的 Entra 登入在其電腦上的執行方式"
+  ],
+  [
+    "URL pattern of the remote servers to block, with * wildcards.",
+    "要遮蔽的遠端伺服器 URL 模式，可用 * 通配符。"
+  ],
+  [
+    "Names the tenant for an Entra sign-in on the person's computer",
+    "指定使用者電腦上 Entra 登入所用的租戶"
+  ],
+  [
+    "Allow optional client-certificate fallback for mTLS endpoints.",
+    "允許 mTLS 端點使用可選的客戶端證書回退。"
+  ],
+  [
+    "Deprecated name for a sign-in that runs on the person's computer",
+    "已棄用名稱：指在使用者電腦上執行的登入方式"
+  ],
+  [
+    "Names a folder on the person's computer that a host does not have",
+    "指定使用者電腦上的某個資料夾，主機上沒有該資料夾"
+  ],
+  [
+    "The host turns traces on or off in the session telemetry it sends",
+    "主機會在其傳送的會話診斷資料中開啟或關閉追蹤"
+  ],
+  [
+    "The host adds the admin's instructions to every session it starts",
+    "主機會在它啟動的每個會話中加入管理員的指令"
+  ],
+  [
+    "Desktop draws the admin's banner across the top of its own window",
+    "桌面版會在自身視窗頂部顯示管理員設定的橫幅"
+  ],
+  [
+    "Configures an Entra sign-in the person completes on their computer",
+    "配置使用者在本人電腦上完成的 Entra 登入"
+  ],
+  [
+    "Set beside the collector's address in the host's own configuration",
+    "在主機自身的配置中，與採集器地址一併設定"
+  ],
+  [
+    "The host makes the model calls, so it adds the admin's headers to them",
+    "模型呼叫由主機發出，因此由主機附加管理員的請求頭"
+  ],
+  [
+    "The host decides how much of a session's content its telemetry carries",
+    "會話內容有多少進入診斷資料，由主機決定"
+  ],
+  [
+    "Sets the length of the window for the token cap, which the host counts",
+    "設定 token 上限所對應的統計視窗長度，由主機計數"
+  ],
+  [
+    "Claude Desktop 1.49585.0 or later on every device, then remove the key",
+    "每臺裝置都升級到 Claude 桌面版 1.49585.0 或更高版本後，再移除該鍵"
+  ],
+  [
+    "Deprecated name for the choice of sign-in window on the person's computer",
+    "已棄用名稱：指使用者電腦上登入視窗的選擇項"
+  ],
+  [
+    "Desktop starts its updater at launch, before it has signed in to the host",
+    "桌面版在啟動時、尚未登入主機之前就啟動更新程式"
+  ],
+  [
+    "Shared bearer token: every org member authenticates as the same identity.",
+    "共享持有者令牌：所有組織成員都以同一身份通過驗證。"
+  ],
+  [
+    "The host starts Claude Code, so it sets how long an MCP tool call may run",
+    "Claude Code 由主機啟動，因此 MCP 工具呼叫可執行多久由主機設定"
+  ],
+  [
+    "Desktop shows this name in place of the provider's name in its own window",
+    "桌面版會在自身視窗中用此名稱替代提供商的名稱"
+  ],
+  [
+    "Desktop shows this detail after the deployment's name in its account menu",
+    "桌面版會在賬戶選單中於部署名稱之後顯示此詳情"
+  ],
+  [
+    "Code sessions on the host may open only a repository from the admin's list",
+    "主機上的 Code 會話只能開啟管理員列表中的倉庫"
+  ],
+  [
+    "Governs a configuration cache file that Desktop keeps on the person's disk",
+    "控制桌面版在使用者磁碟上保留的配置快取檔案"
+  ],
+  [
+    "Configures Cowork's local virtual machine, which a host session does not have",
+    "配置 Cowork 的本地虛擬機器，而主機會話沒有該虛擬機器"
+  ],
+  [
+    "A session host always skips the web fetch preflight check, whatever is written",
+    "無論怎麼設定，會話主機都會跳過網頁抓取的預檢"
+  ],
+  [
+    "Aliases like 'sonnet' are resolved via model discovery. Use the full model ID.",
+    "sonnet 這類別名會通過模型發現來解析。請使用完整的模型 ID。"
+  ],
+  [
+    "Not a GUID. Enter the application (client) ID from the Entra app registration.",
+    "不是 GUID。請填寫 Entra 應用註冊中的應用程式（客戶端）ID。"
+  ],
+  [
+    "Only switches the desktop app's microphone input, which never reaches a session",
+    "僅切換桌面應用的麥克風輸入，該輸入不會進入任何會話"
+  ],
+  [
+    "The host starts Claude Code, so it is the one that turns the bundled skills off",
+    "Claude Code 由主機啟動，因此由主機關閉內建技能"
+  ],
+  [
+    "The host starts Claude Code, so it turns tool search on or off for its sessions",
+    "Claude Code 由主機啟動，因此由主機為其會話開啟或關閉工具搜尋"
+  ],
+  [
+    "WSL lives on the person's Windows computer, and a host session never runs there",
+    "WSL 位於使用者的 Windows 電腦上，主機會話從不在那裡執行"
+  ],
+  [
+    "The host hands each session the admin's allow or ask rule for each built-in tool",
+    "主機會把管理員對每個內建工具的「允許」或「詢問」規則下發給各會話"
+  ],
+  [
+    "Desktop keeps extensions off on a self-hosted install, whatever this setting says",
+    "在自託管安裝中，無論此項如何設定，桌面版都會保持擴展關閉"
+  ],
+  [
+    "Desktop's model picker acts on it, starting each new session on the default model",
+    "桌面版的模型選擇器據此工作，每個新會話都以預設模型啟動"
+  ],
+  [
+    "Tags the desktop app's telemetry and names its local data on the person's computer",
+    "為桌面應用的診斷資料打標籤，並命名其在使用者電腦上的本地資料"
+  ],
+  [
+    "Turns off sessions on the person's computer, which a self-hosted install never runs",
+    "關閉使用者電腦上的會話，而自託管安裝從不執行此類會話"
+  ],
+  [
+    "The host runs scheduled tasks, so when this is off it refuses to create or run them",
+    "定時任務由主機執行，因此關閉此項後主機將拒絕建立或執行它們"
+  ],
+  [
+    "Consents to a launcher on the person's computer, which a session host does not have",
+    "授權使用者電腦上的啟動器，而會話主機沒有該啟動器"
+  ],
+  [
+    "Chat runs only on the person's computer, so a session host holds no chats to delete",
+    "Chat 只在使用者電腦上執行，因此會話主機沒有可刪除的對話"
+  ],
+  [
+    "A session host never offers bypass mode, so every session it runs already has it off",
+    "會話主機從不提供繞過模式，因此其執行的每個會話本就處於關閉狀態"
+  ],
+  [
+    "The host keeps the sessions, so it is the one that stops deleting them during a hold",
+    "會話由主機儲存，因此在保留期內停止刪除它們的是主機"
+  ],
+  [
+    "Names a program on the person's computer, reused for the device's sign-in to the host",
+    "指定使用者電腦上的某個程式，該程式也用於裝置登入主機"
+  ],
+  [
+    "Tells the desktop app where the session host is, so the host itself has no use for it",
+    "告知桌面應用會話主機的位置，主機自身用不到此項"
+  ],
+  [
+    "Applies only to installs signed in to claude.ai, which a self-hosted install never is",
+    "僅適用於已登入 claude.ai 的安裝，而自託管安裝從不屬於此類"
+  ],
+  [
+    "Names an AWS role for a browser sign-in that is only possible on the person's computer",
+    "指定瀏覽器登入所用的 AWS 角色，該登入只能在使用者電腦上進行"
+  ],
+  [
+    "The host runs a session only on a model from this list, and tells Desktop what to show",
+    "主機只允許會話使用此列表中的模型，並告知桌面版應顯示哪些"
+  ],
+  [
+    "Skips a consent prompt on the person's computer for what the configuration server sends",
+    "對配置伺服器下發的內容，跳過使用者電腦上的確認提示"
+  ],
+  [
+    "The host serves the model catalog's rows to Desktop, and to nobody for whom this is off",
+    "由主機把模型目錄的條目提供給桌面版；對關閉此項的使用者不提供"
+  ],
+  [
+    "Only Anthropic's hosted console sets it, for sign-in filling in the person's own Chrome",
+    "僅由 Anthropic 託管控制檯設定，用於在使用者自己的 Chrome 中填充登入資訊"
+  ],
+  [
+    "Names the proxy for the person's computer, and a host's network belongs to its operator",
+    "指定使用者電腦使用的代理；主機的網路歸其運營方所有"
+  ],
+  [
+    "Lists sites allowed for Desktop's browser tools, and host sessions get no browser tools",
+    "列出桌面版瀏覽器工具允許的站點；主機會話沒有瀏覽器工具"
+  ],
+  [
+    "Lists sites blocked for Desktop's browser tools, and host sessions get no browser tools",
+    "列出桌面版瀏覽器工具遮蔽的站點；主機會話沒有瀏覽器工具"
+  ],
+  [
+    "Describes the network of the person's computer, which Desktop applies to its own traffic",
+    "描述使用者電腦的網路環境，桌面版將其應用於自身的網路流量"
+  ],
+  [
+    "Desktop itself quits and installs a downloaded update of the app on the person's computer",
+    "桌面版會在使用者電腦上自行退出並安裝已下載的應用更新"
+  ],
+  [
+    "Only Anthropic's hosted console sets it, and that console never configures a session host",
+    "僅由 Anthropic 託管控制檯設定，而該控制檯從不配置會話主機"
+  ],
+  [
+    "Retired client-certificate setting for the person's computer that current releases ignore",
+    "已停用的客戶端證書設定（針對使用者電腦），當前版本會忽略它"
+  ],
+  [
+    "Lists SSH hosts the person's own computer dials, not anything the session host connects to",
+    "列出使用者電腦撥號的 SSH 主機，與會話主機連線的物件無關"
+  ],
+  [
+    "Desktop acts on it at launch and in each update check, before it has signed in to the host",
+    "桌面版在啟動時及每次檢查更新時生效，此時尚未登入主機"
+  ],
+  [
+    "The host sets the effort of a session that names none, and tells Desktop what to preselect",
+    "未指定投入度的會話由主機設定，並告知桌面版預選哪一檔"
+  ],
+  [
+    "Desktop itself asks the person's computer to stay awake, and shows the keep-awake switches",
+    "由桌面版請求使用者電腦保持喚醒，並顯示相應的保持喚醒開關"
+  ],
+  [
+    "Offers one-click SSO on the claude.ai login screen, which a self-hosted install never uses",
+    "在 claude.ai 登入頁提供一鍵單點登入，自託管安裝從不使用"
+  ],
+  [
+    "Names a program on the person's computer, and a host has no such program, browser or person",
+    "指定使用者電腦上的某個程式，而主機沒有該程式、瀏覽器或使用者"
+  ],
+  [
+    "The host makes the model calls, so it counts each person's tokens and stops them at the cap",
+    "模型呼叫由主機發出，因此由主機統計每個人的 token 用量並在達上限時停止"
+  ],
+  [
+    "Desktop finds the file on the person's computer and offers it in its own Quick Entry window",
+    "由桌面版在使用者電腦上找到該檔案，並在其快速錄入視窗中提供"
+  ],
+  [
+    "Configures a browser sign-in on the person's computer, and a host-run session has no browser",
+    "配置使用者電腦上的瀏覽器登入，而主機執行的會話沒有瀏覽器"
+  ],
+  [
+    "Desktop offers its own Developer menu, developer tools and debugger on the person's computer",
+    "桌面版在使用者電腦上提供自己的開發者選單、開發者工具和偵錯程式"
+  ],
+  [
+    "Concerns the vendor agent in Cowork's local virtual machine, which host sessions never start",
+    "涉及 Cowork 本地虛擬機器中的廠商代理，主機會話從不啟動該虛擬機器"
+  ],
+  [
+    "Copies history into a claude.ai profile after sign-in, which a self-hosted install never has",
+    "登入後將歷史記錄複製到 claude.ai 配置檔案，自託管安裝沒有該配置檔案"
+  ],
+  [
+    "Bounds a helper program on the person's computer, reused for the device's sign-in to the host",
+    "限制使用者電腦上輔助程式的執行，該程式也用於裝置登入主機"
+  ],
+  [
+    "Names a Windows program on the person's computer, reused for the device's sign-in to the host",
+    "指定使用者電腦上的 Windows 程式，該程式也用於裝置登入主機"
+  ],
+  [
+    "Desktop sends this token to the session host as its bearer when the credential kind is static",
+    "當憑據型別為靜態時，桌面版會把此令牌作為持有者令牌傳送給會話主機"
+  ],
+  [
+    "When on, the host gives a session that names no model the 1M-token context, and tells Desktop",
+    "開啟後，主機為未指定模型的會話提供 100 萬 token 上下文，並告知桌面版"
+  ],
+  [
+    "Desktop registers its Quick Entry shortcut with the operating system of the person's computer",
+    "桌面版向使用者電腦的作業系統註冊其快速錄入快捷鍵"
+  ],
+  [
+    "Secret for the person's own Google sign-in, and a host calls Vertex as its own Google identity",
+    "使用者本人 Google 登入所用的金鑰；主機會以其自身的 Google 身份呼叫 Vertex"
+  ],
+  [
+    "Chooses how the person signs in on their computer, and a host calls Vertex as its own identity",
+    "選擇使用者在本人電腦上的登入方式；主機會以其自身身份呼叫 Vertex"
+  ],
+  [
+    "The host refuses Code sessions and routines where the tab is off, and tells Desktop to hide it",
+    "關閉該標籤頁時，主機拒絕 Code 會話與定時任務，並告知桌面版將其隱藏"
+  ],
+  [
+    "Names the ssh program on the person's computer, and self-hosted installs offer no SSH sessions",
+    "指定使用者電腦上的 ssh 程式，而自託管安裝不提供 SSH 會話"
+  ],
+  [
+    "No Chat session can start on a session host, so the switch has nothing to turn on or off there",
+    "會話主機上無法啟動任何 Chat 會話，因此該開關在那裡沒有可開關的物件"
+  ],
+  [
+    "The host starts each session with the built-in tools and tool uses the admin denies turned off",
+    "主機啟動每個會話時，會關閉管理員禁止的內建工具和工具呼叫"
+  ],
+  [
+    "Desktop takes the picture on the person's computer and offers it in its own Quick Entry window",
+    "由桌面版在使用者電腦上拍攝，並在其快速錄入視窗中提供"
+  ],
+  [
+    "The host allows or refuses Auto mode for the sessions it runs, and tells Desktop what to offer",
+    "主機決定其執行的會話是否可用自動模式，並告知桌面版應提供哪些選項"
+  ],
+  [
+    "Installs a security agent into Cowork's local virtual machine, which host sessions never start",
+    "向 Cowork 的本地虛擬機器安裝安全代理，而主機會話從不啟動該虛擬機器"
+  ],
+  [
+    "Reserved for a feature of the desktop app on the person's computer, which no session host runs",
+    "保留給使用者電腦上桌面應用的某項功能，任何會話主機都不執行它"
+  ],
+  [
+    "Drives a browser sign-in on the person's computer, and a host never calls Bedrock as the person",
+    "驅動使用者電腦上的瀏覽器登入；主機從不會以使用者身份呼叫 Bedrock"
+  ],
+  [
+    "Retired plugin address that Desktop reads only to clean up what it once installed on the device",
+    "已停用的外掛地址，桌面版僅用它清理此前在裝置上安裝過的內容"
+  ],
+  [
+    "Governs SSH sessions started from the person's computer, which self-hosted installs never offer",
+    "控制從使用者電腦發起的 SSH 會話，而自託管安裝從不提供"
+  ],
+  [
+    "Chooses the SSH engine on the person's computer, and self-hosted installs offer no SSH sessions",
+    "選擇使用者電腦上的 SSH 引擎，而自託管安裝不提供 SSH 會話"
+  ],
+  [
+    "The host starts Code sessions, so it hands Claude Code the block on reads outside their folders",
+    "Code 會話由主機啟動，因此由主機向 Claude Code 下發「禁止讀取資料夾外內容」的限制"
+  ],
+  [
+    "Part of the device's own route to the model, and a session host's route is its operator's to set",
+    "屬於裝置自身存取模型的鏈路；會話主機的鏈路由其運營方設定"
+  ],
+  [
+    "Names an AWS account for a browser sign-in on the person's computer, which a host never performs",
+    "指定使用者電腦上瀏覽器登入所用的 AWS 賬戶；主機從不執行該登入"
+  ],
+  [
+    "In self-hosted mode it names the device's sign-in to the host, never the host's model credential",
+    "在自託管模式下，它指定的是裝置登入主機的方式，絕不是主機的模型憑據"
+  ],
+  [
+    "Applies only to installs signed in to claude.ai, and a self-hosted install is always third-party",
+    "僅適用於已登入 claude.ai 的安裝；自託管安裝始終屬於第三方"
+  ],
+  [
+    "Tells the desktop app where to fetch its configuration, so it cannot travel inside that document",
+    "告知桌面應用從哪裡獲取配置，因此它不能寫在配置文檔內部"
+  ],
+  [
+    "Names the sign-in the desktop app uses to fetch its configuration, so it cannot travel inside it",
+    "指定桌面應用獲取配置時所用的登入方式，因此它不能寫在配置文檔內部"
+  ],
+  [
+    "A session host states the models it offers, so Desktop discovers none itself, whatever this says",
+    "會話主機會聲明其提供的模型，因此無論此項如何設定，桌面版都不會自行發現"
+  ],
+  [
+    "Only Anthropic's hosted console derives it, and the browser it drives is the person's own Chrome",
+    "僅由 Anthropic 託管控制檯推導；它所驅動的瀏覽器是使用者自己的 Chrome"
+  ],
+  [
+    "Quick Write exists only on installs signed in to claude.ai, which a self-hosted install never is",
+    "快速寫作僅存在於已登入 claude.ai 的安裝中，自託管安裝從不屬於此類"
+  ],
+  [
+    "Chooses how Cowork runs on the person's own computer, and third-party installs no longer read it",
+    "選擇 Cowork 在使用者本人電腦上的執行方式，第三方安裝已不再讀取此項"
+  ],
+  [
+    "Chooses a sign-in window on the person's computer, also used for the device's sign-in to the host",
+    "選擇使用者電腦上的登入視窗，該視窗也用於裝置登入主機"
+  ],
+  [
+    "Bills the exchange of the person's own sign-in token, and a host calls Vertex as its own identity",
+    "計費使用者本人登入令牌的交換；主機會以其自身身份呼叫 Vertex"
+  ],
+  [
+    "Configures a Chat session's local sandbox, and no Chat session can start on a self-hosted install",
+    "配置 Chat 會話的本地沙箱，而自託管安裝上無法啟動任何 Chat 會話"
+  ],
+  [
+    "Shapes Desktop's sign-in screen and configuration source, settled before Desktop reaches the host",
+    "決定桌面版的登入介面與配置來源，在桌面版連線主機之前即已確定"
+  ],
+  [
+    "Concerns claude.ai connector sign-ins on claude.ai installs, which a self-hosted install never is",
+    "涉及 claude.ai 安裝中的 claude.ai 連接器登入，自託管安裝從不屬於此類"
+  ],
+  [
+    "The host applies the admin's per-tool locks, and no plugin's MCP server is started on the computer",
+    "主機執行管理員對每個工具的鎖定；電腦上不會啟動任何外掛的 MCP 伺服器"
+  ],
+  [
+    "The host fetches the admin's plugin marketplaces and loads their plugins into the sessions it runs",
+    "主機獲取管理員指定的外掛市場，並把其中的外掛載入到它執行的會話中"
+  ],
+  [
+    "Desktop installs no extension on a self-hosted install, so there is no signature for it to require",
+    "自託管安裝中桌面版不安裝任何擴展，因此沒有需要校驗的簽名"
+  ],
+  [
+    "Limits claude.ai accounts on installs signed in to claude.ai, which a self-hosted install never is",
+    "限制已登入 claude.ai 的安裝中的 claude.ai 賬戶數量，自託管安裝從不屬於此類"
+  ],
+  [
+    "The browser pane lives in Desktop on the person's computer, and host sessions get no browser tools",
+    "瀏覽器窗格位於使用者電腦上的桌面版中，主機會話沒有瀏覽器工具"
+  ],
+  [
+    "Desktop sends its own events to the host, which holds the collector's headers, so it runs no helper",
+    "桌面版把自身事件傳送給主機，採集器的請求頭由主機儲存，因此無需執行輔助程式"
+  ],
+  [
+    "Fixes in newer releases, security fixes included, reach these devices later than devices on Stable.",
+    "新版本中的修復（含安全修復）到達這些裝置的時間，晚於 Stable 通道的裝置。"
+  ],
+  [
+    "Names a program on the person's computer that supplies headers for fetching the app's configuration",
+    "指定使用者電腦上的某個程式，由它提供獲取應用配置所需的請求頭"
+  ],
+  [
+    "Configures an interactive sign-in on the person's computer, reused to sign the device in to the host",
+    "配置使用者電腦上的互動式登入，該登入也複用於裝置登入主機"
+  ],
+  [
+    "Where the session host answers the app's update checks, no Anthropic update server is left to choose",
+    "由會話主機響應應用的更新檢查，因此不再有 Anthropic 更新伺服器可選"
+  ],
+  [
+    "Controls whether the desktop app fetches its configuration, so it cannot travel inside that document",
+    "控制桌面應用是否獲取配置，因此它不能寫在配置文檔內部"
+  ],
+  [
+    "Desktop sends usage analytics to Anthropic from before sign-in, and a host's sessions never send any",
+    "桌面版在登入前就會向 Anthropic 傳送使用分析；主機的會話則從不傳送"
+  ],
+  [
+    "The host keeps the Code sessions it runs, so it deletes those left idle longer than the admin allows",
+    "Code 會話由主機儲存，因此由主機刪除空閒時間超過管理員設定值的會話"
+  ],
+  [
+    "Sets how long the desktop app caches its helper's output, reused for the device's sign-in to the host",
+    "設定桌面應用快取輔助程式輸出的時長，該快取也用於裝置登入主機"
+  ],
+  [
+    "Steers a browser sign-in on the person's computer, and a host calls Vertex as its own Google identity",
+    "引導使用者電腦上的瀏覽器登入；主機會以其自身的 Google 身份呼叫 Vertex"
+  ],
+  [
+    "Moves the app's data on Windows installs signed in to claude.ai, which a self-hosted install never is",
+    "在已登入 claude.ai 的 Windows 安裝中遷移應用資料，自託管安裝從不屬於此類"
+  ],
+  [
+    "Names where Desktop loads its previews from, and no session host passes the setting on to Desktop yet",
+    "指定桌面版載入預覽的來源；目前尚無會話主機會把該設定傳給桌面版"
+  ],
+  [
+    "Sets up the person's sign-in on their own computer, and a host calls Vertex as its own Google identity",
+    "在使用者本人電腦上配置登入；主機會以其自身的 Google 身份呼叫 Vertex"
+  ],
+  [
+    "Only Desktop versions too old to take the model catalog's rows from their session host fetch from here",
+    "僅當桌面版版本過舊、無法從會話主機獲取模型目錄條目時，才從這裡獲取"
+  ],
+  [
+    "Tools in the host's sessions make the network calls, so the host limits which addresses they may reach",
+    "網路呼叫由主機會話中的工具發出，因此由主機限制它們可存取的地址"
+  ],
+  [
+    "Bluetooth pairing exists only on installs signed in to claude.ai, which a self-hosted install never is",
+    "藍芽配對僅存在於已登入 claude.ai 的安裝中，自託管安裝從不屬於此類"
+  ],
+  [
+    "Sets the default for Desktop's browser tools, and host sessions get no browser tools to allow or block",
+    "設定桌面版瀏覽器工具的預設策略；主機會話沒有可供允許或遮蔽的瀏覽器工具"
+  ],
+  [
+    "The host keeps the Cowork sessions it runs, so it deletes those left idle longer than the admin allows",
+    "Cowork 會話由主機儲存，因此由主機刪除空閒時間超過管理員設定值的會話"
+  ],
+  [
+    "Decides how the desktop app re-runs its helper on the person's computer, reused for sign-in to the host",
+    "決定桌面應用如何在使用者電腦上重新執行其輔助程式，該機制也用於登入主機"
+  ],
+  [
+    "Sets scopes for a browser sign-in on the person's computer, and a host calls Vertex as its own identity",
+    "設定使用者電腦上瀏覽器登入的作用域；主機會以其自身身份呼叫 Vertex"
+  ],
+  [
+    "Sets headers the desktop app sends to fetch its configuration, so it cannot travel inside that document",
+    "設定桌面應用獲取配置時傳送的請求頭，因此它不能寫在配置文檔內部"
+  ],
+  [
+    "The host limits how many days a scheduled task may reuse a lasting MCP tool approval, and tells Desktop",
+    "主機限制定時任務可複用長期 MCP 工具批准的天數，並告知桌面版"
+  ],
+  [
+    "Configures a sign-in the person completes on their computer, and a host calls Vertex as its own identity",
+    "配置使用者在本人電腦上完成的登入；主機會以其自身身份呼叫 Vertex"
+  ],
+  [
+    "Desktop itself restarts on the person's computer after a change to the settings it reads from the device",
+    "桌面版從裝置讀取的設定發生變化後，它會在使用者電腦上自行重啟"
+  ],
+  [
+    "While Show estimated cost is on, the host hands Claude Code these rates for the cost its sessions report",
+    "開啟「顯示預估費用」後，主機會把這些費率交給 Claude Code，用於計算其會話上報的費用"
+  ],
+  [
+    "Gives arguments to a helper program on the person's computer, reused for the device's sign-in to the host",
+    "為電腦上的輔助程式提供參數，該程式也用於裝置登入主機"
+  ],
+  [
+    "Configures a Google browser sign-in on the person's computer, and a host calls Vertex as its own identity",
+    "配置使用者電腦上的 Google 瀏覽器登入；主機會以其自身身份呼叫 Vertex"
+  ],
+  [
+    "Desktop registers claude:// links on the person's computer at launch, before it has signed in to the host",
+    "桌面版在啟動時、尚未登入主機之前，就在使用者電腦上註冊 claude:// 鏈接"
+  ],
+  [
+    "The session host is the one source for how long a sign-in to it lasts, and it reads no figure from this key",
+    "登入會話主機的有效期完全由會話主機決定，它不會從此鍵讀取任何數值"
+  ],
+  [
+    "Runs Claude Code in gateway mode for the gateway's own sign-in, and a session host never starts it that way",
+    "為Gateway自身的登入以Gateway模式執行 Claude Code；會話主機從不以該方式啟動它"
+  ],
+  [
+    "The host stamps these attributes on the session telemetry it sends and on Desktop's events that it forwards",
+    "主機會把這些屬性加到它傳送的會話診斷資料以及它轉發的桌面版事件上"
+  ],
+  [
+    "The host refuses a plugin's remote MCP server that this list matches, even where the allowed list admits it",
+    "若外掛的遠端 MCP 伺服器命中此列表，即使允許列表已放行，主機也會拒絕"
+  ],
+  [
+    "The host stores people's skills, so when this is off it refuses new ones and tells Desktop to hide creation",
+    "技能由主機儲存，因此關閉此項後主機拒絕新增技能，並告知桌面版隱藏建立入口"
+  ],
+  [
+    "The host tells Desktop at which level to send its own events, and filters them again before it forwards them",
+    "主機會告知桌面版以何級別傳送自身事件，並在轉發前再次過濾"
+  ],
+  [
+    "While Show estimated cost is on, the host hands Claude Code this multiplier for the cost its sessions report",
+    "開啟「顯示預估費用」後，主機會把這個係數交給 Claude Code，用於計算其會話上報的費用"
+  ],
+  [
+    "Desktop starts its crash reports to Anthropic at launch, before sign-in, and a host's sessions never send any",
+    "桌面版在啟動時、登入之前就開始向 Anthropic 傳送崩潰報告；主機的會話則從不傳送"
+  ],
+  [
+    "When off, the host leaves lasting MCP tool approvals out of its sessions, and tells Desktop not to offer them",
+    "關閉後，主機不會在其會話中保留長期 MCP 工具批准，並告知桌面版不再提供該選項"
+  ],
+  [
+    "When off, only the local MCP servers the host names start on the person's computer, and none the person added",
+    "關閉後，使用者電腦上只啟動主機指定的本地 MCP 伺服器，不啟動使用者自行新增的"
+  ],
+  [
+    "Names a check Desktop runs on the person's computer before files leave for the host, and no server may set it",
+    "指定桌面版在檔案發往主機前於使用者電腦上執行的檢查；任何伺服器都不得設定此項"
+  ],
+  [
+    "Absolute path to the aws executable, shared with the Bedrock profile setting. Not passed to the helper script.",
+    "aws 可執行檔案的絕對路徑，與 Bedrock 配置檔案設定共用。不會傳給輔助指令碼。"
+  ],
+  [
+    "The host makes the model calls, so it sets how long a stream sending only keep-alive pings may wait for output",
+    "模型呼叫由主機發出，因此僅傳送保活心跳的流可等待多久由主機設定"
+  ],
+  [
+    "The host refreshes its own copy of the policy at least this often, and tells Desktop how often to ask it again",
+    "主機至少以此時長重新整理其策略副本，並告知桌面版多久重新請求一次"
+  ],
+  [
+    "Desktop fetches connector icons, preview frames and a dictionary, starting before it has signed in to the host",
+    "桌面版會獲取連接器圖示、預覽框架和字典，且在登入主機之前就已開始"
+  ],
+  [
+    "The host keeps the plugins people upload and loads them in their sessions, and refuses new ones when this is off",
+    "外掛由主機儲存並載入到對應使用者的會話中；關閉此項後主機拒絕新上傳的外掛"
+  ],
+  [
+    "Whoever runs the host names the collector in the host's own configuration, for its sessions and Desktop's events",
+    "由主機運營方在主機自身的配置中指定採集器，用於其會話及桌面版事件"
+  ],
+  [
+    "The host keeps the collector's headers in its own configuration, so no document that a device fetches holds them",
+    "採集器的請求頭儲存在主機自身的配置中，因此裝置獲取的任何文檔都不包含它們"
+  ],
+  [
+    "Steers the sign-in of Desktop's bundled Microsoft 365 connector, started for no session on a self-hosted install",
+    "引導桌面版內建 Microsoft 365 連接器的登入；在自託管安裝中不會為任何會話啟動它"
+  ],
+  [
+    "Picks the account for Desktop's bundled Microsoft 365 connector, started for no session on a self-hosted install",
+    "選擇桌面版內建 Microsoft 365 連接器使用的賬戶；在自託管安裝中不會為任何會話啟動它"
+  ],
+  [
+    "Desktop can still export sessions stored on the person's computer, and imports none, since no session runs there",
+    "桌面版仍可匯出儲存在使用者電腦上的會話，且不會匯入，因為那裡不執行任何會話"
+  ],
+  [
+    "The host puts the person's identity on the telemetry it sends, and tells Desktop whether to show the person's name",
+    "主機會在傳送的診斷資料中帶上使用者身份，並告知桌面版是否顯示使用者名稱"
+  ],
+  [
+    "Desktop shows its warning about deprecated settings in its own window, for configuration that Desktop reads itself",
+    "對於桌面版自行讀取的配置，其關於已棄用設定的警告會在自身視窗中顯示"
+  ],
+  [
+    "The host connects the admin's MCP servers and applies each tool's rule, and tells Desktop which local ones to start",
+    "主機連線管理員指定的 MCP 伺服器並執行每個工具的規則，同時告知桌面版應啟動哪些本地伺服器"
+  ],
+  [
+    "Desktop applies it before reaching any host: it limits which claude.ai organizations may replace the device profile",
+    "桌面版會在連線任何主機之前應用它：限制哪些 claude.ai 組織可以替換裝置配置檔案"
+  ],
+  [
+    "Times Desktop's own restart for a version installed on the computer, and no session host passes it on to Desktop yet",
+    "控制桌面版針對電腦上已安裝版本的重啟時機；目前尚無會話主機會把它傳給桌面版"
+  ],
+  [
+    "The host has the organization's model review each skill a person saves and each plugin they upload before it is used",
+    "主機會讓組織的模型在使用前審查每個人儲存的技能和他們上傳的外掛"
+  ],
+  [
+    "On a session host desktopHome alone decides Cowork: to turn Cowork off, set desktopHome to off in its policy document",
+    "在會話主機上，Cowork 僅由 desktopHome 決定：如需關閉 Cowork，請在其策略文檔中把 desktopHome 設為 off"
+  ],
+  [
+    "Governs Desktop's own restart for a version installed on the computer, and no session host passes it on to Desktop yet",
+    "控制桌面版針對電腦上已安裝版本的自重啟；目前尚無會話主機會把它傳給桌面版"
+  ],
+  [
+    "The host refuses file access outside folders listed as full paths, and Desktop checks those listed with ~ or a variable",
+    "主機拒絕存取以完整路徑列出之外的資料夾，而桌面版會檢查用 ~ 或變數列出的資料夾"
+  ],
+  [
+    "Gateway baseUrl is an anthropic.com host but authScheme is not x-api-key. Consider switching to inferenceProvider: anthropic",
+    "Gateway的 baseUrl 指向 anthropic.com 主機，但 authScheme 不是 x-api-key。建議改用 inferenceProvider: anthropic"
+  ],
+  [
+    "A two-part path is an owner and a repository: letters, numbers and . _ - (100 characters each), starting with a letter or number",
+    "兩段式路徑分別代表所有者和倉庫：可用字母、數字及 . _ -（各最多 100 個字元），且須以字母或數字開頭"
+  ],
+  [
+    "Crash and error reports are how we diagnose failures specific to your inference setup. Support turnaround will be slower without them.",
+    "崩潰與錯誤報告是我們診斷推理配置特有問題的方式。不提供這些報告，技術支援的處理會更慢。"
+  ],
+  [
+    "Tier availability varies by model and region. Reserved capacity uses a provisioned-throughput ARN as the model ID instead of this setting. Older bundled Claude Code CLI versions ignore this key.",
+    "各檔位的可用性因模型和區域而異。預留容量改用預置吞吐量 ARN 作為模型 ID，而不用此設定。較舊的隨附 Claude Code CLI 版本會忽略此鍵。"
+  ],
+  [
+    "Usage analytics, which include no message content, help Anthropic prioritize improvements for third-party inference. Turning this on also blocks diagnostic-report uploads. People can still export reports to a file.",
+    "使用分析不含任何訊息內容，可幫助 Anthropic 優先改進第三方推理。開啟後也會阻止診斷報告上傳，但使用者仍可將報告匯出為檔案。"
+  ],
+  [
+    "Connected without signing in: OAuth is configured for this server, but the server accepted the connection without requesting authentication. If the server is expected to require sign-in, check its auth enforcement.",
+    "已連線但未登入：此伺服器已配置 OAuth，但伺服器在未要求身份驗證的情況下接受了連線。若該伺服器本應要求登入，請檢查其鑑權是否已啟用。"
+  ],
+  [
+    "Chat, Cowork and Code are all turned off in this configuration, so Claude Desktop has nothing to open. An administrator needs to turn on Cowork or Code (or Chat, except on a self-hosted install, where Chat cannot run).",
+    "此配置中 Chat、Cowork 與 Code 均已關閉，Claude 桌面版沒有可開啟的介面。需由管理員開啟 Cowork 或 Code（或 Chat；但在自託管安裝中 Chat 無法執行）。"
+  ],
+  [
+    "If unset, the app uses the organization of your Anthropic sign-in, where the connection has one. Otherwise, telemetry is tagged with a value the app derives from your connection settings. Where it cannot derive one, telemetry is tagged with a placeholder UUID shared with other unconfigured deployments. In the last two cases, local data is stored under the placeholder. **Changing this value orphans data** stored under the previous value (sessions, skills, plugins).",
+    "未設定時，應用會使用你 Anthropic 登入所屬的組織（若該連線有組織）。否則，診斷資料會打上應用從你的連線設定推匯出的值。若無法推導，則打上與其他未配置部署共用的佔位 UUID。後兩種情況下，本地資料都儲存在佔位符下。**修改此值會使**先前值下儲存的資料（會話、技能、外掛）**成為孤立資料**。"
   ]
 ]
