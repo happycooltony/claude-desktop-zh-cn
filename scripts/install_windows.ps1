@@ -988,29 +988,50 @@ function Expand-AsarArchive {
 function Get-AsarFileIntegrity {
     param([string]$Path)
 
-    $bytes = [IO.File]::ReadAllBytes($Path)
-    $sha = [Security.Cryptography.SHA256]::Create()
+    # 流式分块读取。绝不能用 ReadAllBytes：Claude 4.29+ 的 ion-dist.asar 有 180MB+，
+    # 逐个文件整块读入会把 PowerShell 的 LOH 撑爆。
+    $blockSize = $AsarIntegrityBlockSize
+    $blocks = New-Object System.Collections.Generic.List[string]
+    $wholeSha = [Security.Cryptography.SHA256]::Create()
+    $blockSha = [Security.Cryptography.SHA256]::Create()
+    $buffer = [byte[]]::new($blockSize)
+    $stream = [IO.File]::OpenRead($Path)
     try {
-        $hash = ([BitConverter]::ToString($sha.ComputeHash($bytes)) -replace "-", "").ToLowerInvariant()
-        $blocks = New-Object System.Collections.Generic.List[string]
-        for ($offset = 0; $offset -lt $bytes.Length; $offset += $AsarIntegrityBlockSize) {
-            $length = [Math]::Min($AsarIntegrityBlockSize, $bytes.Length - $offset)
-            $block = [byte[]]::new($length)
-            [Array]::Copy($bytes, $offset, $block, 0, $length)
-            $blocks.Add(([BitConverter]::ToString($sha.ComputeHash($block)) -replace "-", "").ToLowerInvariant())
+        while ($true) {
+            $filled = 0
+            while ($filled -lt $blockSize) {
+                $read = $stream.Read($buffer, $filled, $blockSize - $filled)
+                if ($read -le 0) {
+                    break
+                }
+                $filled += $read
+            }
+            if ($filled -le 0) {
+                break
+            }
+            [void]$wholeSha.TransformBlock($buffer, 0, $filled, $null, 0)
+            $blockHash = $blockSha.ComputeHash($buffer, 0, $filled)
+            $blocks.Add(([BitConverter]::ToString($blockHash) -replace "-", "").ToLowerInvariant())
+            if ($filled -lt $blockSize) {
+                break
+            }
         }
+        [void]$wholeSha.TransformFinalBlock(([byte[]]::new(0)), 0, 0)
+        $hash = ([BitConverter]::ToString($wholeSha.Hash) -replace "-", "").ToLowerInvariant()
         if ($blocks.Count -eq 0) {
             $blocks.Add($hash)
         }
         return [ordered]@{
             algorithm = "SHA256"
             hash = $hash
-            blockSize = $AsarIntegrityBlockSize
+            blockSize = $blockSize
             blocks = @($blocks)
         }
     }
     finally {
-        $sha.Dispose()
+        $stream.Dispose()
+        $wholeSha.Dispose()
+        $blockSha.Dispose()
     }
 }
 
@@ -1029,15 +1050,28 @@ function New-AsarArchive {
 
     $payloadEntries = New-Object System.Collections.Generic.List[object]
     $offsetState = [pscustomobject]@{ Offset = [int64]0 }
+    # 手工拼装紧凑 JSON。ConvertTo-Json 在数千个嵌套节点上会构建完整 PSObject 图，
+    # 183MB 的 ion-dist.asar 实测会被撑到十几 GB 内存，因此这里完全绕开它。
+    $headerJson = New-Object System.Text.StringBuilder
+    [void]$headerJson.Append('{"files":{')
 
-    $newNode = {
+    $appendNode = {
         param([string]$Directory)
 
-        $node = [ordered]@{ files = [ordered]@{} }
-        $items = @(Get-ChildItem -LiteralPath $Directory -Force | Sort-Object Name)
-        foreach ($item in $items) {
+        $first = $true
+        foreach ($item in @(Get-ChildItem -LiteralPath $Directory -Force | Sort-Object Name)) {
+            if (-not $first) {
+                [void]$headerJson.Append(',')
+            }
+            $first = $false
+            # 文件名来自文件系统，Windows 不允许反斜杠和双引号，这里只做保险性转义。
+            $name = $item.Name.Replace('\', '\\').Replace('"', '\"')
+            [void]$headerJson.Append('"').Append($name).Append('"')
+
             if ($item.PSIsContainer) {
-                $node.files[$item.Name] = & $newNode $item.FullName
+                [void]$headerJson.Append(':{"files":{')
+                & $appendNode $item.FullName
+                [void]$headerJson.Append('}}')
                 continue
             }
             if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -eq [IO.FileAttributes]::ReparsePoint) {
@@ -1046,20 +1080,27 @@ function New-AsarArchive {
 
             $offset = [int64]$offsetState.Offset
             $size = [int64]$item.Length
-            $node.files[$item.Name] = [ordered]@{
-                size = $size
-                offset = [string]$offset
-                integrity = Get-AsarFileIntegrity $item.FullName
+            $integrity = Get-AsarFileIntegrity $item.FullName
+
+            [void]$headerJson.Append(':{"size":').Append($size).Append(',"offset":"').Append($offset).Append('","integrity":{"algorithm":"')
+            [void]$headerJson.Append($integrity.algorithm).Append('","hash":"').Append($integrity.hash)
+            [void]$headerJson.Append('","blockSize":').Append($integrity.blockSize).Append(',"blocks":[')
+            $blockSeparator = ''
+            foreach ($block in $integrity.blocks) {
+                [void]$headerJson.Append($blockSeparator).Append('"').Append($block).Append('"')
+                $blockSeparator = ','
             }
+            [void]$headerJson.Append(']}}')
+
             $payloadEntries.Add([pscustomobject]@{ Path = $item.FullName; Size = $size })
             $offsetState.Offset += $size
         }
-        return $node
     }
 
-    $header = & $newNode ([IO.Path]::GetFullPath($SourceDirectory))
-    $headerString = ConvertTo-Json -InputObject $header -Compress -Depth 100
-    $headerStringBytes = [Text.Encoding]::UTF8.GetBytes($headerString)
+    & $appendNode ([IO.Path]::GetFullPath($SourceDirectory))
+    [void]$headerJson.Append('}}')
+
+    $headerStringBytes = [Text.Encoding]::UTF8.GetBytes($headerJson.ToString())
     $headerPayloadSize = Align-4 (4 + $headerStringBytes.Length)
     $headerSize = 4 + $headerPayloadSize
     $headerPickle = [byte[]]::new($headerSize)
