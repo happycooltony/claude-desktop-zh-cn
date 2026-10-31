@@ -1,7 +1,8 @@
 ﻿# 本汉化包只处理第三方 API 模式。Claude 官方已原生支持简体/繁体中文界面，
-# 在线账号模式的中文化交给官方实现。Windows 不修改 app.asar；Claude 4.29+
-# 将前端放进 ion-dist.asar 时，必须重建该包并同步 Claude.exe 内嵌的 ASAR
-# 头哈希，因此这种新布局下 Claude.exe 的 Authenticode 签名会失效。
+# 在线账号模式的中文化交给官方实现。Claude 4.29+ 将前端放进 ion-dist.asar，
+# 4.29+ 的主进程壳层菜单只读取 app.asar 内的 resources/i18n 词库；安装器会重建
+# ion-dist.asar、就地改写 app.asar，并同步 Claude.exe 内嵌的 ASAR 头哈希，因此
+# 这类布局下 Claude.exe 的 Authenticode 签名会失效。
 param(
     [switch]$Interactive,
 
@@ -124,7 +125,7 @@ Test-GitHubReleaseUpdate
 function Read-InteractiveSelection {
     Write-Host "=== Claude Desktop Windows 中文补丁 ==="
     Write-Host ""
-    Write-Host "[1] 安装中文补丁（第三方 API 模式，例如 DeepSeek；不会改动 app.asar）"
+    Write-Host "[1] 安装中文补丁（第三方 API 模式，例如 DeepSeek；会重建 ion-dist.asar、就地改写 app.asar 并更新 Claude.exe 完整性哈希）"
     Write-Host "    官方账号登录界面已由 Claude 原生提供中文，无需本补丁。"
     Write-Host "[2] 恢复原样 / 卸载补丁"
     Write-Host "[3] 自动更新设置（y=禁止自动更新，n=允许自动更新）"
@@ -870,6 +871,7 @@ function Get-AsarEntryPaths {
     return @($paths)
 }
 
+
 function Test-AsarFrontendArchive {
     param([string]$AsarPath)
 
@@ -929,7 +931,7 @@ function Expand-AsarArchive {
                 }
                 $relative = if ($Prefix) { Join-Path $Prefix $name } else { $name }
                 $target = [IO.Path]::GetFullPath((Join-Path $destinationRoot $relative))
-                if (-not $target.StartsWith($destinationRoot + '\', [StringComparison]::OrdinalIgnoreCase)) {
+                if (-not $target.StartsWith($destinationRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
                     throw "ASAR 路径越界: $relative"
                 }
 
@@ -1033,6 +1035,257 @@ function Get-AsarFileIntegrity {
         $wholeSha.Dispose()
         $blockSha.Dispose()
     }
+}
+
+function Get-AsarIntegrityFromBytes {
+    param([byte[]]$Bytes)
+
+    $blockSize = $AsarIntegrityBlockSize
+    $blocks = New-Object System.Collections.Generic.List[string]
+    $wholeSha = [Security.Cryptography.SHA256]::Create()
+    $blockSha = [Security.Cryptography.SHA256]::Create()
+    try {
+        $offset = 0
+        while ($offset -lt $Bytes.Length) {
+            $length = [Math]::Min($blockSize, $Bytes.Length - $offset)
+            [void]$wholeSha.TransformBlock($Bytes, $offset, $length, $null, 0)
+            $blockHash = $blockSha.ComputeHash($Bytes, $offset, $length)
+            $blocks.Add(([BitConverter]::ToString($blockHash) -replace "-", "").ToLowerInvariant())
+            $offset += $length
+        }
+        [void]$wholeSha.TransformFinalBlock(([byte[]]::new(0)), 0, 0)
+        $hash = ([BitConverter]::ToString($wholeSha.Hash) -replace "-", "").ToLowerInvariant()
+        if ($blocks.Count -eq 0) {
+            $blocks.Add($hash)
+        }
+        return [ordered]@{
+            algorithm = "SHA256"
+            hash = $hash
+            blockSize = $blockSize
+            blocks = @($blocks)
+        }
+    }
+    finally {
+        $wholeSha.Dispose()
+        $blockSha.Dispose()
+    }
+}
+
+function Get-AsarEntryNode {
+    param($Header, [string]$EntryPath)
+
+    $node = $Header
+    foreach ($segment in ($EntryPath -split '/')) {
+        $files = $node.PSObject.Properties["files"]
+        if ($null -eq $files) {
+            return $null
+        }
+        $child = $files.Value.PSObject.Properties[$segment]
+        if ($null -eq $child) {
+            return $null
+        }
+        $node = $child.Value
+    }
+    return $node
+}
+
+function Read-AsarEntryBytes {
+    param(
+        [string]$AsarPath,
+        $Parsed,
+        [string]$EntryPath
+    )
+
+    $node = Get-AsarEntryNode $Parsed["Header"] $EntryPath
+    if ($null -eq $node) {
+        throw "app.asar 缺少条目: $EntryPath"
+    }
+    if ($node.PSObject.Properties["files"]) {
+        throw "app.asar 条目是目录: $EntryPath"
+    }
+    if ($node.PSObject.Properties["link"]) {
+        throw "app.asar 条目是软链接: $EntryPath"
+    }
+    if ($node.PSObject.Properties["unpacked"] -and [bool]$node.unpacked) {
+        throw "app.asar 条目是 unpacked: $EntryPath"
+    }
+
+    $size = [int64]$node.size
+    if ($size -le 0) {
+        return [byte[]]::new(0)
+    }
+
+    $dataStart = [int64]8 + [int64]$Parsed["HeaderSize"]
+    $bytes = [byte[]]::new($size)
+    $stream = [IO.File]::Open($AsarPath, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::Read)
+    try {
+        $stream.Seek(($dataStart + [int64]$node.offset), [IO.SeekOrigin]::Begin) | Out-Null
+        $read = 0
+        while ($read -lt $bytes.Length) {
+            $chunk = $stream.Read($bytes, $read, $bytes.Length - $read)
+            if ($chunk -le 0) {
+                throw "app.asar 条目内容不完整: $EntryPath"
+            }
+            $read += $chunk
+        }
+    }
+    finally {
+        $stream.Dispose()
+    }
+    return $bytes
+}
+
+function Write-AsarArchiveWithHeader {
+    param(
+        [string]$AsarPath,
+        [string]$ResourcesPath,
+        $Parsed,
+        $Header,
+        [byte[]]$Append
+    )
+
+    # app.asar 是主进程包，真实安装里含 unpacked / executable / link 条目，解包重打包会丢
+    # 这些元数据甚至让应用起不来。这里只替换头部，原有 payload 原样流式拷贝（头内 offset
+    # 相对 payload 起点，头长度变化不影响其正确性），再把新内容追加到 payload 末尾。
+    $oldDataStart = [int64]8 + [int64]$Parsed["HeaderSize"]
+    $oldPayloadLength = [int64](Get-Item -LiteralPath $AsarPath).Length - $oldDataStart
+    if ($oldPayloadLength -lt 0) {
+        throw "app.asar 长度异常: $AsarPath"
+    }
+
+    $headerStringBytes = [Text.Encoding]::UTF8.GetBytes(($Header | ConvertTo-Json -Depth 100 -Compress))
+    $headerPayloadSize = Align-4 (4 + $headerStringBytes.Length)
+    $headerSize = 4 + $headerPayloadSize
+    $headerPickle = [byte[]]::new($headerSize)
+    [Array]::Copy([BitConverter]::GetBytes([uint32]$headerPayloadSize), 0, $headerPickle, 0, 4)
+    [Array]::Copy([BitConverter]::GetBytes([int32]$headerStringBytes.Length), 0, $headerPickle, 4, 4)
+    [Array]::Copy($headerStringBytes, 0, $headerPickle, 8, $headerStringBytes.Length)
+
+    $prefix = [byte[]]::new(8)
+    [Array]::Copy([BitConverter]::GetBytes([uint32]4), 0, $prefix, 0, 4)
+    [Array]::Copy([BitConverter]::GetBytes([uint32]$headerSize), 0, $prefix, 4, 4)
+
+    $temporary = "$AsarPath.zh-cn-new"
+    Remove-Item -LiteralPath $temporary -Force -ErrorAction SilentlyContinue
+    Backup-ModifiedFile $ResourcesPath $AsarPath
+    $source = [IO.File]::Open($AsarPath, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::Read)
+    $output = [IO.File]::Open($temporary, [IO.FileMode]::CreateNew, [IO.FileAccess]::Write, [IO.FileShare]::None)
+    try {
+        $output.Write($prefix, 0, $prefix.Length)
+        $output.Write($headerPickle, 0, $headerPickle.Length)
+        $source.Seek($oldDataStart, [IO.SeekOrigin]::Begin) | Out-Null
+        $buffer = [byte[]]::new(1024 * 1024)
+        while ($true) {
+            $read = $source.Read($buffer, 0, $buffer.Length)
+            if ($read -le 0) {
+                break
+            }
+            $output.Write($buffer, 0, $read)
+        }
+        if ($null -ne $Append -and $Append.Length -gt 0) {
+            $output.Write($Append, 0, $Append.Length)
+        }
+    }
+    finally {
+        $output.Dispose()
+        $source.Dispose()
+    }
+
+    try {
+        $verify = Read-AsarHeaderFromFile $temporary
+        $expectedCount = @(Get-AsarEntryPaths $Header).Count
+        $actualCount = @(Get-AsarEntryPaths $verify["Header"]).Count
+        if ($actualCount -ne $expectedCount) {
+            throw "app.asar 头部改写后条目数不一致: $expectedCount -> $actualCount"
+        }
+    }
+    catch {
+        Remove-Item -LiteralPath $temporary -Force -ErrorAction SilentlyContinue
+        throw
+    }
+
+    Move-Item -LiteralPath $temporary -Destination $AsarPath -Force
+}
+
+function Set-AsarEntryContent {
+    param(
+        [string]$AsarPath,
+        [string]$ResourcesPath,
+        [string]$EntryPath,
+        [byte[]]$Content
+    )
+
+    $parsed = Read-AsarHeaderFromFile $AsarPath
+    $node = Get-AsarEntryNode $parsed["Header"] $EntryPath
+    if ($null -eq $node) {
+        throw "app.asar 缺少条目: $EntryPath"
+    }
+    if ($node.PSObject.Properties["link"]) {
+        throw "app.asar 条目是软链接，拒绝改写: $EntryPath"
+    }
+    if ($node.PSObject.Properties["unpacked"] -and [bool]$node.unpacked) {
+        throw "app.asar 条目是 unpacked，拒绝改写: $EntryPath"
+    }
+
+    $oldDataStart = [int64]8 + [int64]$parsed["HeaderSize"]
+    $oldPayloadLength = [int64](Get-Item -LiteralPath $AsarPath).Length - $oldDataStart
+
+    # 新内容追加到 payload 末尾，旧内容留在原地成为不再被引用的空洞，其它条目完全不受影响。
+    $node.offset = "$oldPayloadLength"
+    $node.size = [int64]$Content.Length
+    if ($node.PSObject.Properties["integrity"]) {
+        $integrity = Get-AsarIntegrityFromBytes $Content
+        $node.integrity = [pscustomobject]@{
+            algorithm = $integrity.algorithm
+            hash = $integrity.hash
+            blockSize = $integrity.blockSize
+            blocks = @($integrity.blocks)
+        }
+    }
+
+    Write-AsarArchiveWithHeader -AsarPath $AsarPath -ResourcesPath $ResourcesPath -Parsed $parsed -Header $parsed["Header"] -Append $Content
+}
+
+function Add-AsarEntryContent {
+    param(
+        [string]$AsarPath,
+        [string]$ResourcesPath,
+        [string]$EntryPath,
+        [byte[]]$Content
+    )
+
+    $parsed = Read-AsarHeaderFromFile $AsarPath
+    $segments = $EntryPath -split '/'
+    if ($segments.Length -lt 2) {
+        throw "app.asar 条目路径无效: $EntryPath"
+    }
+    $name = $segments[-1]
+    $parentPath = $segments[0..($segments.Length - 2)] -join '/'
+    $parentNode = Get-AsarEntryNode $parsed["Header"] $parentPath
+    if ($null -eq $parentNode -or -not $parentNode.PSObject.Properties["files"]) {
+        return $false
+    }
+    if ($null -ne $parentNode.files.PSObject.Properties[$name]) {
+        return $false
+    }
+
+    $oldDataStart = [int64]8 + [int64]$parsed["HeaderSize"]
+    $oldPayloadLength = [int64](Get-Item -LiteralPath $AsarPath).Length - $oldDataStart
+    $integrity = Get-AsarIntegrityFromBytes $Content
+    $node = [pscustomobject]@{
+        size = [int64]$Content.Length
+        offset = "$oldPayloadLength"
+        integrity = [pscustomobject]@{
+            algorithm = $integrity.algorithm
+            hash = $integrity.hash
+            blockSize = $integrity.blockSize
+            blocks = @($integrity.blocks)
+        }
+    }
+    Add-Member -InputObject $parentNode.files -NotePropertyName $name -NotePropertyValue $node
+
+    Write-AsarArchiveWithHeader -AsarPath $AsarPath -ResourcesPath $ResourcesPath -Parsed $parsed -Header $parsed["Header"] -Append $Content
+    return $true
 }
 
 function New-AsarArchive {
@@ -1152,7 +1405,7 @@ function Remove-GeneratedFrontendWorkspace {
     }
     $root = [IO.Path]::GetFullPath($ResourcesPath).TrimEnd('\', '/')
     $target = [IO.Path]::GetFullPath($WorkspacePath).TrimEnd('\', '/')
-    if (-not $target.StartsWith($root + '\', [StringComparison]::OrdinalIgnoreCase) -or
+    if (-not $target.StartsWith($root + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase) -or
         (Split-Path -Leaf $target) -ne "ion-dist") {
         throw "拒绝清理非安装器工作目录: $WorkspacePath"
     }
@@ -1305,6 +1558,18 @@ function Get-AsarHeaderHash {
     return Get-Sha256Hex ([System.Text.Encoding]::UTF8.GetBytes($parsed["HeaderString"]))
 }
 
+function Get-ClaudeExePathFromResources {
+    param([string]$ResourcesPath)
+
+    $appPath = Get-ClaudeAppPathFromResources $ResourcesPath
+    $exePath = Join-Path $appPath "Claude.exe"
+    if (-not (Test-Path $exePath)) {
+        $exePath = Join-Path $appPath "claude.exe"
+    }
+    Require-File $exePath
+    return $exePath
+}
+
 function Get-ClaudeExeIntegrityMarker {
     param(
         [string]$ExeText,
@@ -1323,7 +1588,8 @@ function Get-ClaudeExeIntegrityMarker {
         ('{"file":"resources' + $bs + $bs + $AsarName + $tail),
         ('resources' + $bs + $bs + $AsarName + $tail),
         ('{"file":"resources' + $fw + $AsarName + $tail),
-        ('resources' + $fw + $AsarName + $tail)
+        ('resources' + $fw + $AsarName + $tail),
+        ('resources' + $bs + $AsarName + $tail)
     )
 
     foreach ($candidate in $candidates) {
@@ -1340,16 +1606,158 @@ function Get-ClaudeExeIntegrityMarker {
     throw "Could not find Claude.exe $AsarName integrity marker. Claude bundle format may have changed."
 }
 
+function Assert-ClaudeExeIntegrityMarkers {
+    param([string]$ResourcesPath)
+
+    # 4.4212 曾出现「asar 已改完、Claude.exe 哈希却写不回去」的半坏状态。
+    # 真正写入前先只读校验所有目标的标记，格式不兼容时零副作用地快速失败。
+    $exePath = Get-ClaudeExePathFromResources $ResourcesPath
+    $exeInfo = Get-Item -LiteralPath $exePath
+    $targets = @("app.asar", "ion-dist.asar") | Where-Object {
+        Test-Path -LiteralPath (Join-Path $ResourcesPath $_) -PathType Leaf
+    }
+    if ($targets.Count -eq 0) {
+        return
+    }
+
+    Write-Host "  [进度] 正在校验 Claude.exe 完整性标记..." -ForegroundColor DarkGray
+    $exeText = [System.IO.File]::ReadAllText($exePath, [System.Text.Encoding]::ASCII)
+    foreach ($asarName in $targets) {
+        $marker = Get-ClaudeExeIntegrityMarker -ExeText $exeText -AsarName $asarName
+        $hashOffset = $exeText.IndexOf($marker, [System.StringComparison]::Ordinal) + $marker.Length
+        if (($hashOffset + 64) -gt $exeInfo.Length) {
+            throw "Claude.exe $asarName integrity marker has invalid bounds."
+        }
+    }
+}
+
+
+function Merge-LocaleJson {
+    param([string]$TargetJson, [string]$OverrideJson)
+
+    $target = $TargetJson | ConvertFrom-Json
+    $override = $OverrideJson | ConvertFrom-Json
+
+    $changed = 0
+    foreach ($property in $override.PSObject.Properties) {
+        if ($property.Value -isnot [string]) { continue }
+        $existing = $target.PSObject.Properties[$property.Name]
+        if ($null -ne $existing) {
+            if ([string]$existing.Value -ne $property.Value) {
+                $existing.Value = $property.Value
+                $changed++
+            }
+            continue
+        }
+        Add-Member -InputObject $target -NotePropertyName $property.Name -NotePropertyValue $property.Value
+        $changed++
+    }
+
+    return [pscustomobject]@{
+        Changed = $changed
+        Json = ($target | ConvertTo-Json -Depth 4 -Compress)
+    }
+}
+
+function Merge-LocaleOverride {
+    param(
+        [Parameter(Mandatory = $true)][string]$I18nDirectory,
+        [Parameter(Mandatory = $true)][string]$Lang
+    )
+
+    # Claude 4.29+ 的主进程菜单和前端 i18n 都固定按 en-US 加载词库（渲染进程约 1 秒后
+    # 还会把 locale 写回 en-US），只放 zh-CN.json 不会被选中。这里把所选中文词库合并
+    # 覆盖进 en-US.json，才能覆盖那些只存在于词库、JS 里没有字面量的条目。
+    $targetPath = Join-Path $I18nDirectory "en-US.json"
+    $overridePath = Join-Path $I18nDirectory "$Lang.json"
+    if (-not (Test-Path -LiteralPath $targetPath -PathType Leaf) -or
+        -not (Test-Path -LiteralPath $overridePath -PathType Leaf)) {
+        return 0
+    }
+
+    try {
+        $merged = Merge-LocaleJson ([IO.File]::ReadAllText($targetPath, [Text.Encoding]::UTF8)) ([IO.File]::ReadAllText($overridePath, [Text.Encoding]::UTF8))
+    }
+    catch {
+        Write-Host "  [提示] 词库不是有效 JSON，跳过中英合并: $($_.Exception.Message)" -ForegroundColor DarkYellow
+        return 0
+    }
+
+    if ($merged.Changed -gt 0) {
+        [IO.File]::WriteAllText($targetPath, $merged.Json, (New-Object System.Text.UTF8Encoding($false)))
+    }
+    return $merged.Changed
+}
+
+function Patch-DesktopShellLocale {
+    param(
+        [string]$ResourcesPath,
+        [string]$Lang
+    )
+
+    # Claude 4.29+ 的主进程界面（原生菜单栏、任务栏右键菜单）只从 app.asar 内的
+    # resources/i18n 词库取文案，但语言白名单不含中文、渲染进程还会把 locale 写回
+    # en-US，所以仅补一份 <Lang>.json 不会生效。app.asar 是主进程包，真实安装里含
+    # unpacked / executable 条目，解包重打包会破坏主进程，因此这里就地改写头部与 payload。
+    $asarPath = Join-Path $ResourcesPath "app.asar"
+    if (-not (Test-Path -LiteralPath $asarPath -PathType Leaf)) {
+        Write-Host "  [提示] 未找到 app.asar，跳过主进程菜单汉化。" -ForegroundColor DarkYellow
+        return
+    }
+
+    $desktopPack = Join-Path $ResourcesPath "$Lang.json"
+    if (-not (Test-Path -LiteralPath $desktopPack -PathType Leaf)) {
+        Write-Host "  [提示] 未找到桌面词库 $Lang.json，跳过主进程菜单汉化。" -ForegroundColor DarkYellow
+        return
+    }
+
+    $parsed = Read-AsarHeaderFromFile $asarPath
+    $entryPaths = @(Get-AsarEntryPaths $parsed["Header"])
+    $basePath = "resources/i18n/en-US.json"
+    if ($entryPaths -notcontains $basePath) {
+        Write-Host "  [提示] app.asar 内未找到 $basePath，当前版本可能不读取壳层词库，跳过主进程菜单汉化。" -ForegroundColor DarkYellow
+        return
+    }
+
+    try {
+        $targetJson = [Text.Encoding]::UTF8.GetString((Read-AsarEntryBytes $asarPath $parsed $basePath))
+        $merged = Merge-LocaleJson $targetJson ([IO.File]::ReadAllText($desktopPack, [Text.Encoding]::UTF8))
+    }
+    catch {
+        Write-Host "  [提示] 词库不是有效 JSON，跳过主进程菜单汉化: $($_.Exception.Message)" -ForegroundColor DarkYellow
+        return
+    }
+
+    $changed = 0
+    if ($merged.Changed -gt 0) {
+        Set-AsarEntryContent -AsarPath $asarPath -ResourcesPath $ResourcesPath -EntryPath $basePath -Content ([Text.Encoding]::UTF8.GetBytes($merged.Json))
+        $changed = $merged.Changed
+        Write-Host "  app.asar 已把 $Lang 词库覆盖进 $basePath（$changed 条）" -ForegroundColor Green
+    }
+    else {
+        Write-Host "  app.asar 的 $basePath 已是最新中文词库" -ForegroundColor Green
+    }
+
+    $localePath = "resources/i18n/$Lang.json"
+    if ($entryPaths -notcontains $localePath) {
+        $localeBytes = [IO.File]::ReadAllBytes($desktopPack)
+        if (Add-AsarEntryContent -AsarPath $asarPath -ResourcesPath $ResourcesPath -EntryPath $localePath -Content $localeBytes) {
+            Write-Host "  app.asar 已补入主进程词库 $localePath" -ForegroundColor Green
+            $changed = $changed + 1
+        }
+    }
+
+    if ($changed -gt 0) {
+        # app.asar 头部变了，Claude.exe 内嵌的 ASAR 头哈希必须同步，否则应用校验失败。
+        Sync-ClaudeExeAsarIntegrity $ResourcesPath
+    }
+}
+
+
 function Sync-ClaudeExeAsarIntegrity {
     param([string]$ResourcesPath)
 
-    $appPath = Get-ClaudeAppPathFromResources $ResourcesPath
-    $exePath = Join-Path $appPath "Claude.exe"
-    if (-not (Test-Path $exePath)) {
-        $exePath = Join-Path $appPath "claude.exe"
-    }
-    Require-File $exePath
-
+    $exePath = Get-ClaudeExePathFromResources $ResourcesPath
     $targets = @("app.asar", "ion-dist.asar") | Where-Object {
         Test-Path -LiteralPath (Join-Path $ResourcesPath $_) -PathType Leaf
     }
@@ -1363,6 +1771,7 @@ function Sync-ClaudeExeAsarIntegrity {
         $exeText = [System.IO.File]::ReadAllText($exePath, [System.Text.Encoding]::ASCII)
         $marker = Get-ClaudeExeIntegrityMarker -ExeText $exeText -AsarName $asarName
         $markerIndex = $exeText.IndexOf($marker, [System.StringComparison]::Ordinal)
+
         $hashOffset = $markerIndex + $marker.Length
         if (($hashOffset + 64) -gt $exeInfo.Length) {
             throw "Claude.exe $asarName integrity marker has invalid bounds."
@@ -3157,6 +3566,9 @@ function Install-WindowsLanguagePack {
         if ($installKind -eq "AppX") {
             Write-Host "  安装类型: 商店版 (MSIX/AppX)" -ForegroundColor DarkGray
         }
+        # 先只读校验完整性标记，再动任何 asar：4.4212 曾出现「asar 已改、exe 哈希写不回」
+        # 的半坏状态，这里在结构不兼容时零副作用地快速失败。
+        Assert-ClaudeExeIntegrityMarkers $resourcesPath
 
         Write-Step "修复桌面 Claude 快捷方式"
         Repair-ClaudeDesktopShortcut $claudePath
@@ -3176,6 +3588,12 @@ function Install-WindowsLanguagePack {
         Patch-HardcodedFrontendStrings $resourcesPath $LanguageCode
         Patch-SlashCommandMenu $resourcesPath $LanguageCode
         Patch-LanguageDisplayNames $resourcesPath
+        # 前端同样固定加载 en-US 词库，把中文词库合并进去才能覆盖仅存在于词库的文案。
+        $mergedFrontend = Merge-LocaleOverride (Join-Path $resourcesPath "ion-dist\i18n") $LanguageCode
+        if ($mergedFrontend -gt 0) {
+            Write-Host "  ion-dist.asar 已把 $LanguageCode 词库覆盖进 i18n/en-US.json（$mergedFrontend 条）" -ForegroundColor Green
+        }
+        Patch-DesktopShellLocale $resourcesPath $LanguageCode
         Complete-FrontendPatchTarget $patchTarget
         Close-FrontendPatchTarget $patchTarget
         $usedAsarFrontend = $patchTarget.Mode -eq "Asar"
@@ -3193,10 +3611,10 @@ function Install-WindowsLanguagePack {
         Write-Host ""
         Write-Host "安装完成。如果界面未立即切换，请在 Language 中选择 $label。" -ForegroundColor Green
         if ($usedAsarFrontend) {
-            Write-Host "提示：Claude 4.29+ 将前端打包为 ion-dist.asar；安装器已更新其完整性哈希，Claude.exe 的原始 Authenticode 签名会失效。" -ForegroundColor DarkYellow
+            Write-Host "提示：Claude 4.29+ 将前端打包为 ion-dist.asar，主进程菜单词库在 app.asar 内；安装器已重建 ion-dist.asar、就地改写 app.asar 并更新 Claude.exe 完整性哈希，原始 Authenticode 签名会失效。" -ForegroundColor DarkYellow
         }
         else {
-            Write-Host "提示：本补丁不改动 app.asar / Claude.exe，官方账号登录界面请直接使用 Claude 自带的语言设置。" -ForegroundColor DarkGray
+            Write-Host "提示：本补丁仅写入中文资源，不改动 app.asar / Claude.exe；官方账号登录界面请直接使用 Claude 自带的语言设置。" -ForegroundColor DarkGray
         }
     }
     catch {
